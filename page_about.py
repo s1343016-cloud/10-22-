@@ -1,7 +1,7 @@
 import streamlit as st
 st.set_page_config(layout="wide")
-st.title("Streamlit App")
-st.header("Hello, Geographers!")
+st.title("sö/[ Streamlit App")
+st.header("Hello, Geographers!(From Codespaces!)")
 
 import sys
 import tempfile
@@ -24,18 +24,11 @@ basemap = st.sidebar.selectbox("Select basemap", basemaps, index=0)
 
 # Vector layer uploader (GeoJSON or zipped Shapefile)
 st.sidebar.subheader("Vector layer (GeoJSON or zipped Shapefile)")
-vector_file = st.sidebar.file_uploader(
-    "Upload GeoJSON (.geojson/.json) or zipped Shapefile (.zip)",
-    type=["geojson", "json", "zip"],
-)
+vector_file = st.sidebar.file_uploader("Upload GeoJSON (.geojson/.json) or zipped Shapefile (.zip)", type=["geojson","json","zip"])
 
 # COG (Cloud Optimized GeoTIFF) input
 st.sidebar.subheader("COG layer (DEM)")
-cog_url = st.sidebar.text_input(
-    "COG URL (optional)",
-    value="",
-    help="Enter a public COG URL (optional). Example: https://your-bucket/path/to/dem.tif",
-)
+cog_url = st.sidebar.text_input("COG URL (optional)", value="", help="Enter a public COG URL (optional). Example: https://your-bucket/path/to/dem.tif")
 
 # Create the map
 m = leafmap.Map(center=[20, 0], zoom=2, basemap=basemap)
@@ -48,11 +41,8 @@ if vector_file is not None:
             path = os.path.join(tmpdir, vector_file.name)
             with open(path, "wb") as f:
                 f.write(vector_file.getbuffer())
-            try:
-                m.add_geojson(path, layer_name="Uploaded GeoJSON")
-                st.sidebar.success(f"Loaded GeoJSON: {vector_file.name}")
-            except Exception as e:
-                st.sidebar.error(f"Failed to load GeoJSON: {e}")
+            m.add_geojson(path, layer_name="Uploaded GeoJSON")
+            st.sidebar.success("Loaded GeoJSON")
         elif fname.endswith(".zip"):
             zip_path = os.path.join(tmpdir, vector_file.name)
             with open(zip_path, "wb") as f:
@@ -70,8 +60,20 @@ if vector_file is not None:
                     if shp_path:
                         break
                 if shp_path:
-                    m.add_shapefile(shp_path, layer_name="Uploaded Shapefile")
-                    st.sidebar.success(f"Loaded Shapefile: {os.path.basename(shp_path)}")
+                    # Convert shapefile to GeoJSON using geopandas and add as GeoJSON
+                    try:
+                        try:
+                            import geopandas as gpd
+                        except Exception:
+                            subprocess.check_call([sys.executable, "-m", "pip", "install", "geopandas"])
+                            import geopandas as gpd
+                        gdf = gpd.read_file(shp_path)
+                        geojson_path = os.path.join(tmpdir, "uploaded_shapefile.geojson")
+                        gdf.to_file(geojson_path, driver="GeoJSON")
+                        m.add_geojson(geojson_path, layer_name="Uploaded Shapefile")
+                        st.sidebar.success("Loaded Shapefile")
+                    except Exception as e:
+                        st.sidebar.error(f"Failed to load shapefile via geopandas: {e}")
                 else:
                     st.sidebar.error("No .shp found in the uploaded zip")
             except Exception as e:
