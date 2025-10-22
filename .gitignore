@@ -205,3 +205,26 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# ------------------------------------
+# ò: Streamlit þ
+# ------------------------------------
+# ONóoö API Keys vüÿ
+.streamlit/secrets.toml
+# ------------------------------------
+# ò: GIS þ
+# ------------------------------------
+# þ~/O Git
+*.tif
+*.tiff
+*.TIF
+*.TIFF
+*.asc
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+*.geojson
+*.kml
+*.gpkg
