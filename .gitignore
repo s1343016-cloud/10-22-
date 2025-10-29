@@ -228,3 +228,6 @@ __marimo__/
 *.geojson
 *.kml
 *.gpkg
+# Streamlit 機密檔案(*** 最重要 ***)
+# ------------------------------------
+.streamlit/secrets.toml

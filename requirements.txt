@@ -1,3 +1,9 @@
 streamlit
-leafmap
+pandas
+numpy
+pydeck
+plotly
 geopandas
+rasterio
+xarray
+localtileserver
